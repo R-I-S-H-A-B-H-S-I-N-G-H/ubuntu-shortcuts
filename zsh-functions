@@ -46,15 +46,15 @@ kafka_create_topic() {
 }
 
 aql_start() {
-    sudo service aerospike start
+    docker start aerospike
 }
 
 aql_restart() {
-    sudo service aerospike restart
+    docker stop aerospike && docker start aerospike
 }
 
 aql_stop() {
-    sudo service aerospike stop
+    docker stop aerospike
 }
 
 sql_start() {

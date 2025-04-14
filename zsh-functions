@@ -1,7 +1,70 @@
 killport() {
-    sudo kill -9 $(sudo lsof -t -i:$1)
+    local port=$1
+    if [[ -z "$port" ]]; then
+        echo "Usage: killport <port>"
+        return 1
+    fi
+    sudo kill -9 $(sudo lsof -t -i:"$port") 2>/dev/null || echo "No process found on port $port"
 }
 
 runjava8app() {
-    (cd ../common && setjava8 && gradle install)&& setjava8 && gradle run
+    (
+        cd ../common || return
+        setjava8 && gradle install
+    ) && setjava8 && gradle run
+}
+
+kafka_start() {
+    sudo service zookeeper start && sudo service kafka start
+}
+
+kafka_producer() {
+    local topic=$1
+    if [[ -z "$topic" ]]; then
+        echo "Usage: kafka_producer <topic>"
+        return 1
+    fi
+    /opt/kafka/bin/kafka-console-producer.sh --bootstrap-server localhost:9092 --topic "$topic"
+}
+
+kafka_consumer() {
+    local topic=$1
+    if [[ -z "$topic" ]]; then
+        echo "Usage: kafka_consumer <topic>"
+        return 1
+    fi
+    /opt/kafka/bin/kafka-console-consumer.sh --bootstrap-server localhost:9092 --topic "$topic" --from-beginning
+}
+
+kafka_create_topic() {
+    local topic=$1
+    if [[ -z "$topic" ]]; then
+        echo "Usage: kafka_create_topic <topic>"
+        return 1
+    fi
+    /opt/kafka/bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --topic "$topic"
+}
+
+aql_start() {
+    sudo service aerospike start
+}
+
+aql_restart() {
+    sudo service aerospike restart
+}
+
+aql_stop() {
+    sudo service aerospike stop
+}
+
+sql_start() {
+    docker start mysql-container
+}
+
+sql() {
+    sql_start && docker exec -it mysql-container mysql -uroot tcp_qa
+}
+
+sql_stop() {
+    docker stop mysql-container
 }

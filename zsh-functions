@@ -50,7 +50,7 @@ aql_start() {
 }
 
 aql_restart() {
-    docker stop aerospike && docker start aerospike
+    docker restart aerospike
 }
 
 aql_stop() {

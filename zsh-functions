@@ -1,3 +1,7 @@
 killport() {
     sudo kill -9 $(sudo lsof -t -i:$1)
 }
+
+runjava8app() {
+    (cd ../common && setjava8 && gradle install)&& setjava8 && gradle run
+}

@@ -7,6 +7,10 @@ killport() {
     sudo kill -9 $(sudo lsof -t -i:"$port") 2>/dev/null || echo "No process found on port $port"
 }
 
+setjava8() {
+    sdk use gradle 3.3 && sdk use java 8.0.452-zulu
+}
+
 runjava8app() {
     (
         cd ../common || return

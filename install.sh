@@ -1,43 +1,67 @@
 #!/bin/bash
 
-# File to store functions
+set -euo pipefail
+
+### Constants ###
 FUNCTIONS_FILE="$HOME/.my_zsh_functions"
+FUNCTIONS_REPO_URL="https://raw.githubusercontent.com/R-I-S-H-A-B-H-S-I-N-G-H/ubuntu-shortcuts/main/zsh-functions"
 
-# URL of your GitHub repository raw function file
-REPO_URL="https://raw.githubusercontent.com/R-I-S-H-A-B-H-S-I-N-G-H/ubuntu-shortcuts/main/zsh-functions"
+KAFKA_COMPOSE_DIR="$HOME/docker/kafka"
+DOCKER_COMPOSE_FILE="$KAFKA_COMPOSE_DIR/docker-compose.yml"
+KAFKA_COMPOSE_URL="https://raw.githubusercontent.com/R-I-S-H-A-B-H-S-I-N-G-H/ubuntu-shortcuts/refs/heads/main/ubuntu-setup/reources/kafka-setup.yml"
 
-# Path for Docker Compose file
-DOCKER_COMPOSE_FILE="$HOME/docker/kafka/docker-compose.yml"
-DOCKER_COMPOSE_KAFKA_URL="https://raw.githubusercontent.com/R-I-S-H-A-B-H-S-I-N-G-H/ubuntu-shortcuts/refs/heads/main/ubuntu-setup/reources/kafka-setup.yml"
+ZSHRC_FILE="$HOME/.zshrc"
 
-# Ensure docker directory exists
-sudo mkdir -p "$HOME/docker/kafka"
+### Functions ###
 
-# Download the docker-compose file
-echo "Downloading Docker Compose file to $DOCKER_COMPOSE_FILE to $HOME/docker"
-sudo curl -sSf -o "$DOCKER_COMPOSE_FILE" "$DOCKER_COMPOSE_KAFKA_URL" || {
-    echo "Failed to download docker-compose file from $DOCKER_COMPOSE_KAFKA_URL"
+log() {
+    echo "[INFO] $1"
+}
+
+error_exit() {
+    echo "[ERROR] $1" >&2
     exit 1
 }
 
-
-# Always download the latest version from GitHub
-echo "Downloading latest functions file to $FUNCTIONS_FILE"
-curl -sSf -o "$FUNCTIONS_FILE" "$REPO_URL" || {
-    echo "Failed to download the functions file from $REPO_URL"
-    exit 1
+require_command() {
+    command -v "$1" &>/dev/null || error_exit "'$1' command not found. Please install it first."
 }
 
-# Add sourcing to .zshrc if not already present
-if ! grep -q "source $FUNCTIONS_FILE" "$HOME/.zshrc"; then
-    echo "Adding source line to .zshrc"
-    echo "source $FUNCTIONS_FILE" >> "$HOME/.zshrc"
-else
-    echo "Source line already exists in .zshrc"
-fi
+download_file() {
+    local url=$1
+    local destination=$2
+    curl -fsSL "$url" -o "$destination" || error_exit "Failed to download from $url"
+}
 
-# Reload .zshrc
-echo "Reloading .zshrc..."
-source "$HOME/.zshrc"
+ensure_directory() {
+    local dir=$1
+    mkdir -p "$dir" || error_exit "Failed to create directory: $dir"
+}
 
-echo "Installation complete. The functions are now available."
+append_if_missing() {
+    local line=$1
+    local file=$2
+    grep -qxF "$line" "$file" || echo "$line" >> "$file"
+}
+
+### Main Script ###
+
+require_command curl
+
+log "Creating Kafka compose directory at $KAFKA_COMPOSE_DIR"
+ensure_directory "$KAFKA_COMPOSE_DIR"
+
+log "Downloading Kafka Docker Compose file..."
+download_file "$KAFKA_COMPOSE_URL" "$DOCKER_COMPOSE_FILE"
+
+log "Downloading ZSH functions file..."
+download_file "$FUNCTIONS_REPO_URL" "$FUNCTIONS_FILE"
+
+log "Ensuring .zshrc sources the functions file..."
+append_if_missing "source $FUNCTIONS_FILE" "$ZSHRC_FILE"
+
+log "Reloading .zshrc"
+# shellcheck disable=SC1090
+source "$ZSHRC_FILE"
+
+log "Installation complete. Functions are now available."

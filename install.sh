@@ -7,7 +7,7 @@ FUNCTIONS_FILE="$HOME/.my_zsh_functions"
 REPO_URL="https://raw.githubusercontent.com/R-I-S-H-A-B-H-S-I-N-G-H/ubuntu-shortcuts/main/zsh-functions"
 
 # Path for Docker Compose file
-DOCKER_COMPOSE_FILE="$HOME/docker/docker-compose.yml"
+DOCKER_COMPOSE_FILE="$HOME/docker/docker-compose/kafka.yml"
 DOCKER_COMPOSE_KAFKA_URL="https://raw.githubusercontent.com/R-I-S-H-A-B-H-S-I-N-G-H/ubuntu-shortcuts/refs/heads/main/ubuntu-setup/reources/kafka-setup.yml"
 
 # Ensure docker directory exists

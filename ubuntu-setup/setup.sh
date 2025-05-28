@@ -14,6 +14,9 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 curl -s "https://get.sdkman.io" | bash
 
 # Add current user to docker group
-sudo usermod -aG docker "$USER"
+(sudo groupadd docker)
+(sudo usermod -aG docker $USER)
+(newgrp docker)
+
 
 echo "✅ Setup complete. Please log out and back in (or restart terminal) for all changes to take effect."

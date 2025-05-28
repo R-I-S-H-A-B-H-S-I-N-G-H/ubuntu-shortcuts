@@ -6,6 +6,21 @@ FUNCTIONS_FILE="$HOME/.my_zsh_functions"
 # URL of your GitHub repository raw function file
 REPO_URL="https://raw.githubusercontent.com/R-I-S-H-A-B-H-S-I-N-G-H/ubuntu-shortcuts/main/zsh-functions"
 
+# Path for Docker Compose file
+DOCKER_COMPOSE_FILE="$HOME/docker/docker-compose.yml"
+DOCKER_COMPOSE_KAFKA_URL="https://raw.githubusercontent.com/R-I-S-H-A-B-H-S-I-N-G-H/ubuntu-shortcuts/refs/heads/main/ubuntu-setup/reources/kafka-setup.yml"
+
+# Ensure docker directory exists
+mkdir -p "$HOME/docker"
+
+# Download the docker-compose file
+echo "Downloading Docker Compose file to $DOCKER_COMPOSE_FILE"
+curl -sSf -o "$DOCKER_COMPOSE_FILE" "$DOCKER_COMPOSE_KAFKA_URL" || {
+    echo "Failed to download docker-compose file from $DOCKER_COMPOSE_KAFKA_URL"
+    exit 1
+}
+
+
 # Always download the latest version from GitHub
 echo "Downloading latest functions file to $FUNCTIONS_FILE"
 curl -sSf -o "$FUNCTIONS_FILE" "$REPO_URL" || {

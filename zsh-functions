@@ -18,6 +18,10 @@ runjava8app() {
     ) && setjava8 && gradle run
 }
 
+kafka_up() {
+    docker-compose -f "$HOME/docker/docker-compose/kafka.yml" up
+}
+
 kafka_start() {
     sudo service zookeeper start && sudo service kafka start
 }

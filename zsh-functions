@@ -19,7 +19,7 @@ runjava8app() {
 }
 
 kafka_up() {
-    docker-compose -f "$HOME/docker/kafka.yml" up
+    docker-compose -f "$HOME/docker/kafka/docker-compose.yml" up
 }
 
 kafka_start() {

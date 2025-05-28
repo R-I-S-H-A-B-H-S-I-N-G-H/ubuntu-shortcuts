@@ -16,5 +16,7 @@ curl -s "https://get.sdkman.io" | bash
 # Add current user to docker group
 sudo groupadd docker && sudo usermod -aG docker $USER && newgrp docker
 
+// setting zsh as default shell
+bash && chsh -s $(which zsh)
 
 echo "✅ Setup complete. Please log out and back in (or restart terminal) for all changes to take effect."

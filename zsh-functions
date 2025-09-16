@@ -76,3 +76,7 @@ sql() {
 sql_stop() {
     docker stop mysql-container
 }
+
+gemini(){ 
+    npx https://github.com/google-gemini/gemini-cli
+}
